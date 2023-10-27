@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 public class Terminal {
@@ -16,6 +17,9 @@ public class Terminal {
             case "ls":
                 ls();
                 break;
+            case "touch":
+                touch();
+                break;
         }
     }
 
@@ -27,6 +31,21 @@ public class Terminal {
             for (String a : paths) {
                 System.out.println(a);
             }
+        }
+    }
+
+    public void touch() {
+        File file = new File(parser.getArgs().get(0));
+
+        try {
+            file.createNewFile();
+        }
+        catch (IOException e) {
+            output = setBoldText + "touch" + setPlainText +
+                    ": can't create file " + parser.getArgs().get(0)
+                    + setBoldText +
+                    ": File already exist at this location" + setPlainText;
+            display();
         }
     }
 
