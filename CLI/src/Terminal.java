@@ -1,6 +1,5 @@
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.*;
 
 public class Terminal {
     private static Parser parser = new Parser();
@@ -14,12 +13,28 @@ public class Terminal {
             case "mkdir":
                 mkdir();
                 break;
+            case "ls":
+                ls();
+                break;
+        }
+    }
+
+    public void ls() {
+        if (parser.getCommandOptions().get(0).equals("-r")) {
+            File file = new File(System.getProperty("user.dir"));
+            String[] paths = file.list();
+            Arrays.sort(paths, Collections.reverseOrder());
+            for (String a : paths) {
+                System.out.println(a);
+            }
         }
     }
 
     public void mkdir(){
         for(String arg : parser.getArgs()){
+
             File file = new File(arg);
+
             if(!file.mkdirs()){
                 output = setBoldText + "mkdir" + setPlainText +
                         ": can't create directory " + arg
@@ -44,14 +59,13 @@ public class Terminal {
             }
             Terminal terminal = new Terminal();
             terminal.chooseCommandAction();
-
             break;
         }
     }
 
     public static void main(String[] args) {
         run();
-//        File file = new File("H:\\ME71\\3rd Year\\1st Term\\OS\\Lab_1_virtual_os_linux\\aa");
+//        File file = new File("\"H:\\ME71\\3rd Year\\1st Term\\OS\\Lab_1_virtual_os_linux\\aa\"");
 //        System.out.println(file.isAbsolute());
 //        String ex = "hello\"";
 //        System.out.println(ex.endsWith("\"\""));

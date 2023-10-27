@@ -37,6 +37,10 @@ public class Parser {
     }
 
     public static void pathChecker() {
+        if(args.isEmpty()){
+            return;
+        }
+
         ArrayList<String> newArgs = new ArrayList<>();
 
         for (int i = 0; i < args.size(); ++i) {
@@ -52,6 +56,7 @@ public class Parser {
                             break;
                         }
                     }
+                    pathArg = pathArg.substring(1, pathArg.length()-1);
                     newArgs.add(pathArg);
                 }
             }
