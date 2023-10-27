@@ -1,5 +1,6 @@
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
 import java.util.*;
 
 public class Terminal {
@@ -9,7 +10,7 @@ public class Terminal {
     final static String setPlainText = "\033[0;0m";
     final static String setBoldText = "\033[0;1m";
 
-    public void chooseCommandAction() {
+    public void chooseCommandAction() throws IOException {
         switch (parser.getCommandName()){
             case "mkdir":
                 mkdir();
@@ -19,6 +20,9 @@ public class Terminal {
                 break;
             case "touch":
                 touch();
+                break;
+            case "cp":
+                cp();
                 break;
         }
     }
@@ -63,12 +67,46 @@ public class Terminal {
             }
         }
     }
+    public void cp() throws IOException {
+        File file1 = new File(parser.getArgs().get(0));
+        File file2 = new File(parser.getArgs().get(1));
 
+        FileInputStream in = null;
+        FileOutputStream out = null;
+
+        try {
+             in = new FileInputStream(file1);
+             out = new FileOutputStream(file2);
+
+            int line;
+            while((line = in.read()) != -1){
+                    out.write(line);
+            }
+        }
+        catch (IOException e) {
+            output = setBoldText + "mkdir" + setPlainText +
+                    ": can't copy file "
+                    + setBoldText +
+                    ": No such files exists" + setPlainText;
+            display();
+        }
+        finally {
+            if(in != null) {
+                in.close();
+            }
+
+            if(out != null){
+                out.close();
+            }
+        }
+
+
+    }
     public static void display(){
         System.out.println(output);
     }
 
-    public static void run(){
+    public static void run() throws IOException {
         Scanner s = new Scanner(System.in);
         while (true) {
             String input = s.nextLine();
@@ -82,7 +120,7 @@ public class Terminal {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         run();
 //        File file = new File("\"H:\\ME71\\3rd Year\\1st Term\\OS\\Lab_1_virtual_os_linux\\aa\"");
 //        System.out.println(file.isAbsolute());
