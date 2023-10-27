@@ -31,9 +31,37 @@ public class Parser {
                 args.add(instruction[i]);
             }
         }
+        pathChecker();
         return true;
 //        return checkArgs(args) && checkOptions(commandOptions);
     }
+
+    public static void pathChecker() {
+        ArrayList<String> newArgs = new ArrayList<>();
+
+        for (int i = 0; i < args.size(); ++i) {
+            if (args.get(i).charAt(0) == '"') {
+                String pathArg = args.get(i);
+
+                if (!args.get(i).endsWith("\"")) {
+                    for (int j = i + 1; j < args.size(); ++j) {
+                        pathArg += " " + args.get(j);
+
+                        if (args.get(j).endsWith("\"") || args.get(j).startsWith("\"")) {
+                            i = j;
+                            break;
+                        }
+                    }
+                    newArgs.add(pathArg);
+                }
+            }
+            else {
+                newArgs.add(args.get(i));
+            }
+        }
+            args = newArgs;
+    }
+
 //    public boolean checkArgs(ArrayList<String> a) {
 //        switch (commandName) {
 //            case :

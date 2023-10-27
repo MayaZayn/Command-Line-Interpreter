@@ -1,11 +1,40 @@
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Terminal {
-    private static Parser parser;
-    public void chooseCommandAction() {
+    private static Parser parser = new Parser();
+    private static String output;
 
+    final static String setPlainText = "\033[0;0m";
+    final static String setBoldText = "\033[0;1m";
+
+    public void chooseCommandAction() {
+        switch (parser.getCommandName()){
+            case "mkdir":
+                mkdir();
+                break;
+        }
     }
-    public static void main(String[] args) {
+
+    public void mkdir(){
+        for(String arg : parser.getArgs()){
+            File file = new File(arg);
+            if(!file.mkdirs()){
+                output = setBoldText + "mkdir" + setPlainText +
+                        ": can't create directory " + arg
+                        + setBoldText +
+                        ": No such file or directory" + setPlainText;
+                display();
+            }
+        }
+    }
+
+    public static void display(){
+        System.out.println(output);
+    }
+
+    public static void run(){
         Scanner s = new Scanner(System.in);
         while (true) {
             String input = s.nextLine();
@@ -13,6 +42,28 @@ public class Terminal {
             if (!input.isEmpty()) {
                 parser.parse(input);
             }
+            Terminal terminal = new Terminal();
+            terminal.chooseCommandAction();
+
+            break;
         }
     }
+
+    public static void main(String[] args) {
+        run();
+//        File file = new File("H:\\ME71\\3rd Year\\1st Term\\OS\\Lab_1_virtual_os_linux\\aa");
+//        System.out.println(file.isAbsolute());
+//        String ex = "hello\"";
+//        System.out.println(ex.endsWith("\"\""));
+//        String ex = "H:\\ME71\\3rd Year\\1st Term\\OS\\Lab_1_virtual_os_linux\\aa" +
+//                "C:\\ME71\\3rd Year\\1st Term\\OS\\Lab_1_virtual_os_linux\\aa";
+//        String del = "[H:C:]+";
+//        String[] a = ex.split(del);
+//        for(String b : a){
+//            System.out.println(b);
+//        }
+
+    }
+
+//mkdir "H:\ME71\3rd Year\1st Term\OS\Lab_1_virtual_os_linux\aa" "H:\ME71\3rd Year\1st Term"
 }
