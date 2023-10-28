@@ -1,3 +1,4 @@
+import java.nio.file.Paths;
 import java.util.Scanner;
 
 public class Terminal {
@@ -15,7 +16,7 @@ public class Terminal {
                 parser.parse(input);
             }
             Terminal t = new Terminal();
-            t.echo();
+            t.pwd();
             t.display();
             break;
         }
@@ -35,6 +36,15 @@ public class Terminal {
         }
     }
 
+    public void pwd(){
+        // test if error بيضرب
+        // import java.nio.file.Paths;
+        if (parser.getArgs().size() > 0){
+            System.err.println("bad arguments, pwd takes no arguments.");
+            return;
+        }
+        output = Paths.get("").toAbsolutePath().toString();
+    }
     public void display(){
         System.out.println(output);
     }
