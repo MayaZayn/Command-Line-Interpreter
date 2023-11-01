@@ -30,7 +30,11 @@ public class Terminal {
         // to be handled:
         // backslash in input without " "
         // input with " " --> remove " "
+        output = "";
         for (String arg : parser.getArgs()) {
+            if(arg.equals(">") || arg.equals(">>")){
+                return;
+            }
             output += arg + " ";
         }
     }
