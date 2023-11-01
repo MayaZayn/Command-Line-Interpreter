@@ -1,7 +1,8 @@
 import java.util.Scanner;
 
 public class Terminal {
-    private String output = "";
+    private String output;
+    private String currentDir;
     private static Parser parser = new Parser();
     public void chooseCommandAction() {
 
@@ -23,6 +24,15 @@ public class Terminal {
 
     public void cd(){
 
+    public void pwd(){
+        // test if error بيضرب
+        // import java.nio.file.Paths;
+        if (parser.getArgs().size() > 0){
+            System.err.println("bad arguments, pwd takes no arguments.");
+        }
+        currentDir = "";
+        currentDir = Paths.get("").toAbsolutePath().toString();
+        output = currentDir;
     }
 
 
