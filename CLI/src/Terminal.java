@@ -1,7 +1,11 @@
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Scanner;
 
 public class Terminal {
-    private String output = "";
+    private String output;
+    private Path currentDir = Paths.get("").toAbsolutePath();
+
     private static Parser parser = new Parser();
     public void chooseCommandAction() {
 
@@ -16,6 +20,7 @@ public class Terminal {
             }
             Terminal t = new Terminal();
             t.echo();
+            t.pwd();
             t.display();
             break;
         }
@@ -30,6 +35,12 @@ public class Terminal {
             output += arg + " ";
         }
         output = output.substring(0, output.length() - 1);
+    }
+    public void pwd(){
+        if (parser.getArgs().size() > 0){
+            System.err.println("bad arguments, pwd takes no arguments.");
+        }
+        output = currentDir.toString();
     }
 
     public void display(){
