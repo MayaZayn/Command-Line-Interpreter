@@ -22,19 +22,6 @@ public class Terminal {
         }
     }
 
-    public void echo(){
-        // to be added:
-        // -e option --> enables the interpretation of backslash escapes
-        // * --> echo * = ls
-        // -n --> ???
-
-        // to be handled:
-        // backslash in input without " "
-        // input with " " --> remove " "
-        for (String arg : parser.getArgs()) {
-            output += arg + " ";
-        }
-    }
 
     public void pwd(){
         // test if error بيضرب
