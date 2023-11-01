@@ -1,9 +1,11 @@
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Scanner;
 
 public class Terminal {
     private String output;
-    private String currentDir;
+    private Path currentDir = Paths.get("").toAbsolutePath();
+
     private static Parser parser = new Parser();
     public void chooseCommandAction() {
 
@@ -25,14 +27,10 @@ public class Terminal {
 
 
     public void pwd(){
-        // test if error بيضرب
-        // import java.nio.file.Paths;
         if (parser.getArgs().size() > 0){
             System.err.println("bad arguments, pwd takes no arguments.");
         }
-        currentDir = "";
-        currentDir = Paths.get("").toAbsolutePath().toString();
-        output = currentDir;
+        output = currentDir.toString();
     }
     public void display(){
         System.out.println(output);
