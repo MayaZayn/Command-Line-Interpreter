@@ -22,21 +22,14 @@ public class Terminal {
     }
 
     public void echo(){
-        // to be added:
-        // -e option --> enables the interpretation of backslash escapes
-        // * --> echo * = ls
-        // -n --> ???
-
-        // to be handled:
-        // backslash in input without " "
-        // input with " " --> remove " "
         output = "";
         for (String arg : parser.getArgs()) {
             if(arg.equals(">") || arg.equals(">>")){
-                return;
+                break;
             }
             output += arg + " ";
         }
+        output = output.substring(0, output.length() - 1);
     }
 
     public void display(){
