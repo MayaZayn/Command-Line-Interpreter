@@ -358,7 +358,7 @@ public class Terminal {
             input = input.strip();
             if (!input.isEmpty()) {
                 if (!parser.parse(input)) {
-                    t.output = parser.getCommandName() + ": Invalid options or number of arguments";
+                    t.output = parser.getCommandName() + ": Invalid command, options, or number of arguments\n";
                 } else {
                     t.chooseCommandAction();
                 }
