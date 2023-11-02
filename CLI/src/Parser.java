@@ -54,9 +54,9 @@ public class Parser {
                             break;
                         }
                     }
+                }
                     pathArg = pathArg.substring(1, pathArg.length()-1);
                     newArgs.add(pathArg);
-                }
             } else {
                 newArgs.add(args.get(i));
             }
@@ -70,10 +70,11 @@ public class Parser {
     }
     public boolean checkArgs() {
         return switch (commandName) {
-            case "pwd", "ls", "history","exit" -> args.isEmpty();
-            case "rmdir", "touch", "rm" -> args.size() == 1;
-            case "cd", "echo" -> args.isEmpty() || args.size() == 1;
-            case "mkdir" -> !args.isEmpty();
+            case "pwd", "history","exit" -> args.isEmpty();
+            case "rmdir", "rm" -> args.size() == 1;
+            case "ls", "cd" -> args.isEmpty() || args.size() == 1;
+            case "echo" -> true;
+            case "mkdir", "touch" -> !args.isEmpty();
             case "cp" -> args.size() == 2;
             case "cat" -> args.size() == 1 || args.size() == 2;
             default -> false;
