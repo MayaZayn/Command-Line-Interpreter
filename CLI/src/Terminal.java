@@ -67,8 +67,15 @@ public class Terminal {
             Path newPath;
 
             if (path.equals("..")) {
-                newPath = Paths.get(currentDir.toString()).getParent();
-                currentDir = currentDir.resolve(newPath);
+
+                try{
+                    newPath = Paths.get(currentDir.toString()).getParent();
+                    currentDir = currentDir.resolve(newPath);
+                }
+                catch (NullPointerException err){
+                    output = setBoldText + RED + "Can't go back anymore.\n"
+                            + setPlainText + RESET;
+                }
             } else {
                 try {
                     newPath = Paths.get(path);
