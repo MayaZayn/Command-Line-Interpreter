@@ -78,6 +78,11 @@ public class Terminal {
                 }
             } else {
                 try {
+                    if(path.equals(".")){
+                        output = setBoldText + RED + "Bad arguments, Invalid path given."
+                                + setPlainText + RESET + '\n';
+                        return;
+                    }
                     newPath = Paths.get(path);
                     if (!newPath.isAbsolute()) {
                         path = currentDir + "\\" + path;
@@ -348,27 +353,37 @@ public class Terminal {
         }
     }
     public void touch() {
-        File file = new File(currentDir + "\\" + parser.getArgs().get(0));
-
-        try {
-            if(!file.createNewFile()){
-                output = setBoldText + YELLOW +"touch" + setPlainText +
-                        ": can't create file." + parser.getArgs().get(0) + ": "
-                        + setBoldText + RED +
-                        "File already exist at this location" + setPlainText + RESET + '\n';
+        for (String args : parser.getArgs()) {
+            File file;
+            if(!new File(args).isAbsolute()){
+                file = new File(currentDir + "\\" + args);
             }
-        }
-        catch (IOException e) {
-            output = setBoldText + YELLOW +"touch" + setPlainText +
-                    ": can't create file.\n" + parser.getArgs().get(0) + ": "
-                    + setBoldText + RED +
-                    "Invalid Input" + setPlainText + RESET + '\n';
+            else{
+                file = new File(args);
+            }
+
+            try {
+                if (!file.createNewFile()) {
+                    output = setBoldText + YELLOW + "touch" + setPlainText +
+                            ": can't create file." + parser.getArgs().get(0) + ": "
+                            + setBoldText + RED +
+                            "File already exist at this location" + setPlainText + RESET + '\n';
+                }
+            } catch (IOException e) {
+                output = setBoldText + YELLOW + "touch" + setPlainText +
+                        ": can't create file.\n" + parser.getArgs().get(0) + ": "
+                        + setBoldText + RED +
+                        "Invalid Input" + setPlainText + RESET + '\n';
+            }
         }
     }
     public void mkdir(){
         for(String arg : parser.getArgs()){
-
-            File file = new File(currentDir + "\\" + arg);
+            File file;
+            if(!new File(arg).isAbsolute())
+                file = new File(currentDir + "\\" + arg);
+            else
+                file = new File(arg);
 
             if(!file.mkdirs()){
                 output = setBoldText + YELLOW + "mkdir" + setPlainText +
