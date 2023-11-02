@@ -71,8 +71,8 @@ public class Parser {
     public boolean checkArgs() {
         return switch (commandName) {
             case "pwd", "ls", "history","exit" -> args.isEmpty();
-            case "echo", "rmdir", "touch", "rm" -> args.size() == 1;
-            case "cd" -> args.isEmpty() || args.size() == 1;
+            case "rmdir", "touch", "rm" -> args.size() == 1;
+            case "cd", "echo" -> args.isEmpty() || args.size() == 1;
             case "mkdir" -> !args.isEmpty();
             case "cp" -> args.size() == 2;
             case "cat" -> args.size() == 1 || args.size() == 2;
