@@ -98,12 +98,16 @@ public class Terminal {
     }
     public void echo() {
         output = "";
-        for (String arg : parser.getArgs()) {
-            if(arg.equals(">") || arg.equals(">>")){
-                break;
+        if (!parser.getArgs().isEmpty()) {
+            for (String arg : parser.getArgs()) {
+                if (arg.equals(">") || arg.equals(">>")) {
+                    break;
+                }
+                output += setBoldText + CYAN + arg + " "
+                        + setPlainText + RESET + '\n';
             }
-            output += setBoldText + CYAN + arg + " "
-                    + setPlainText + RESET + '\n';
+        } else {
+            output = "\n";
         }
     }
     public void pwd() {
@@ -370,10 +374,9 @@ public class Terminal {
         }
     }
     public void display() {
-        System.out.println(output);
+        System.out.print(output);
     }
-
-    public static void main(String[] args) throws IOException {
+    public static void run() throws IOException {
         Scanner s = new Scanner(System.in);
         Terminal t = new Terminal();
 
@@ -396,5 +399,8 @@ public class Terminal {
             t.display();
             inputHistory.add(input);
         }
+    }
+    public static void main(String[] args) throws IOException {
+        run();
     }
 }
