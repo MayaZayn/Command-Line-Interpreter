@@ -1,11 +1,11 @@
 import java.util.ArrayList;
 
 public class Parser {
-    private static String commandName;
-    private static ArrayList<String> commandOptions;
-    private static ArrayList<String> args;
+    private String commandName;
+    private ArrayList<String> commandOptions;
+    private ArrayList<String> args;
 
-    static {
+    {
         commandOptions = new ArrayList<String>();
         args = new ArrayList<String>();
     }
@@ -35,7 +35,7 @@ public class Parser {
         return checkArgs() && checkOptions();
     }
 
-    public static void pathChecker() {
+    public void pathChecker() {
         if(args.isEmpty()){
             return;
         }
@@ -64,6 +64,11 @@ public class Parser {
             }
         }
         args = newArgs;
+    }
+    public void parserReset(){
+        commandName = "";
+        args.clear();
+        commandOptions.clear();
     }
 
     public boolean checkArgs() {
