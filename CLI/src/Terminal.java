@@ -314,6 +314,10 @@ public class Terminal {
             file = new File(parser.getArgs().get(0));
         }
         String[] paths = file.list();
+        if(paths.length == 0){
+            output = setBoldText + RED + "Empty Directory.\n" + setPlainText + RESET;
+            return;
+        }
         if (!parser.getCommandOptions().isEmpty() && parser.getCommandOptions().get(0).equals("-r"))  {
             Arrays.sort(paths, Collections.reverseOrder());
         }
