@@ -152,10 +152,22 @@ public class Terminal {
             try {
                 Files.copy(source.toPath(), destination.toPath());
             } catch (FileAlreadyExistsException e) {}
+            catch (NoSuchFileException noSuchFileException) {
+                output = setBoldText + "mkdir" + setPlainText +
+                        ": can't copy file "
+                        + setBoldText +
+                        ": No such files exists" + setPlainText + '\n';
+            }
         } else {
             try {
                 Files.copy(source.toPath(), destination.toPath());
             } catch (FileAlreadyExistsException e) {}
+            catch (NoSuchFileException noSuchFileException) {
+                output = setBoldText + "mkdir" + setPlainText +
+                        ": can't copy file "
+                        + setBoldText +
+                        ": No such files exists" + setPlainText + '\n';
+            }
         }
     }
     public void copyFile() throws IOException {
