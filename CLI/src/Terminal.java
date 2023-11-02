@@ -166,10 +166,11 @@ public class Terminal {
                 Files.copy(source.toPath(), destination.toPath());
             } catch (FileAlreadyExistsException e) {}
             catch (NoSuchFileException noSuchFileException) {
+                boolean flag = source.isDirectory();
                 output = setBoldText + YELLOW + "cp" + setPlainText +
-                        ": cannot copy file:" + setBoldText +
-                        parser.getArgs().get(0) + ": " +
-                        setBoldText +  RED + "No such file exists." + setPlainText +
+                        ": cannot copy file\n" + setBoldText +
+                        parser.getArgs().get(flag ? 1 : 0) + ": " +
+                        setBoldText +  RED + "No such directory" + setPlainText +
                         RESET + '\n';
             }
         } else {
@@ -177,10 +178,12 @@ public class Terminal {
                 Files.copy(source.toPath(), destination.toPath());
             } catch (FileAlreadyExistsException e) {}
             catch (NoSuchFileException noSuchFileException) {
-                output = setBoldText + "mkdir" + setPlainText +
-                        ": can't copy file "
-                        + setBoldText +
-                        ": No such files exists" + setPlainText + '\n';
+                boolean flag = source.isDirectory();
+                output = setBoldText + YELLOW + "cp" + setPlainText +
+                        ": cannot copy file\n" + setBoldText +
+                        parser.getArgs().get(flag ? 1 : 0) + ": " +
+                        setBoldText +  RED + "No such directory" + setPlainText +
+                        RESET + '\n';
             }
         }
     }
