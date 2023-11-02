@@ -14,7 +14,7 @@ public class Parser {
         echo, pwd, cd, ls, mkdir, rmdir, touch, cp, rm, cat, wc, history, exit
     }
 
-    public boolean parse(String input) { // ls -l
+    public boolean parse(String input) {
         String[] instruction = input.split(" ");
         commandName = instruction[0];
 
@@ -34,7 +34,6 @@ public class Parser {
         pathChecker();
         return checkArgs() && checkOptions();
     }
-
     public void pathChecker() {
         if(args.isEmpty()){
             return;
@@ -58,8 +57,7 @@ public class Parser {
                     pathArg = pathArg.substring(1, pathArg.length()-1);
                     newArgs.add(pathArg);
                 }
-            }
-            else {
+            } else {
                 newArgs.add(args.get(i));
             }
         }
@@ -70,7 +68,6 @@ public class Parser {
         args.clear();
         commandOptions.clear();
     }
-
     public boolean checkArgs() {
         return switch (commandName) {
             case "pwd", "ls", "history" -> args.isEmpty();
@@ -82,7 +79,6 @@ public class Parser {
             default -> false;
         };
     }
-
     public boolean checkOptions() {
         return switch (commandName) {
             case "ls", "cp" -> commandOptions.get(0).equals("-r") && commandOptions.size() == 1;
