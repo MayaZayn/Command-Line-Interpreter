@@ -303,6 +303,9 @@ public class Terminal {
     }
     public void ls() {
         File file = new File(currentDir.toString());
+        if(!parser.getArgs().isEmpty() && new File(parser.getArgs().get(0)).isAbsolute()){
+            file = new File(parser.getArgs().get(0));
+        }
         String[] paths = file.list();
         if (!parser.getCommandOptions().isEmpty() && parser.getCommandOptions().get(0).equals("-r"))  {
             Arrays.sort(paths, Collections.reverseOrder());
@@ -357,8 +360,11 @@ public class Terminal {
             String input = s.nextLine();
             input = input.strip();
             if (!input.isEmpty()) {
-                if (!parser.parse(input)) {
-                    t.output = parser.getCommandName() + ": Invalid command, options, or number of arguments\n";
+                if (!parser.parse(input)){
+                    t.output = setBoldText + RED +
+                            parser.getCommandName() + setBoldText + RED
+                            + ": Invalid command, options, or number of arguments\n"
+                            + RESET;
                 } else {
                     t.chooseCommandAction();
                 }
