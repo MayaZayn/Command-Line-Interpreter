@@ -32,8 +32,7 @@ public class Parser {
             }
         }
         pathChecker();
-        return true;
-//        return checkArgs(args) && checkOptions(commandOptions);
+        return checkArgs() && checkOptions();
     }
 
     public static void pathChecker() {
@@ -67,70 +66,32 @@ public class Parser {
         args = newArgs;
     }
 
-//    public boolean checkArgs(ArrayList<String> a) {
-//        switch (commandName) {
-//            case "pwd":
-//                if (!getArgs().isEmpty()){
-//                    return false;
-//                }
-//                break;
-//            case :
-//                break;
-//            case :
-//                break;
-//            case :
-//                break;
-//            case :
-//                break;
-//            case :
-//                break;
-//            case :
-//                break;
-//            case :
-//                break;
-//            case :
-//                break;
-//            case :
-//                break;
-//            case :
-//                break;
-//            case :
-//                break;
-//            case :
-//                break;
-//        }
-//    }
-//
-//    public boolean checkOptions(ArrayList<String> a) {
-//        switch (commandName) {
-//            case :
-//                break;
-//            case :
-//                break;
-//            case :
-//                break;
-//            case :
-//                break;
-//            case :
-//                break;
-//            case :
-//                break;
-//            case :
-//                break;
-//            case :
-//                break;
-//            case :
-//                break;
-//            case :
-//                break;
-//            case :
-//                break;
-//            case :
-//                break;
-//            case :
-//                break;
-//        }
-//    }
+    public boolean checkArgs() {
+        switch (commandName) {
+            case "pwd","ls","history":
+                return args.isEmpty();
+            case "echo","rmdir","touch","rm":
+                return args.size() == 1;
+            case "cd":
+                return args.isEmpty() || args.size() == 1;
+            case "mkdir":
+                return !args.isEmpty();
+            case "cp":
+                return args.size() == 2;
+            case "cat":
+                return args.size() == 1 || args.size() == 2;
+        }
+        return false;
+    }
+
+    public boolean checkOptions() {
+        switch (commandName) {
+            case "ls","cp":
+                return commandOptions.get(0).equals("-r") && commandOptions.size() == 1;
+            default:
+               return commandOptions.isEmpty();
+        }
+    }
     public String getCommandName() {
         return commandName;
     }
