@@ -271,7 +271,11 @@ public class Terminal {
         }
     }
     public void rm() throws IOException {
-        File file = new File(currentDir.toString(), parser.getArgs().get(0));
+        String s = parser.getArgs().get(0);
+        File file = new File(s);
+        if (!file.isAbsolute())
+            file = new File(currentDir.toString(), s);
+//        File file = new File(currentDir.toString(), parser.getArgs().get(0));
         if (file.isDirectory()) {
             output = setBoldText + YELLOW + "rm" + setPlainText +
                     ": cannot remove:" + setBoldText +
