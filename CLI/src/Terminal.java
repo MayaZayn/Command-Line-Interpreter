@@ -15,17 +15,11 @@ public class Terminal {
 
     private static Parser parser = new Parser();
     public void chooseCommandAction() throws IOException {
-        switch (parser.getCommandName()){
-            case "mkdir":
-                mkdir();
-                break;
-            case "ls":
-                ls();
-                break;
-            case "touch":
-                touch();
-                break;
-            case "cp":
+        switch (parser.getCommandName()) {
+            case "mkdir" -> mkdir();
+            case "ls" -> ls();
+            case "touch" -> touch();
+            case "cp" -> {
                 if (!parser.getCommandOptions().isEmpty() &&
                         Objects.equals(parser.getCommandOptions().get(0), "-r")) {
                     File source, destination;
@@ -34,59 +28,41 @@ public class Terminal {
 
                     if (!new File(parser.getArgs().get(0)).isAbsolute()) {
                         source = new File(currentDir + "\\" + parser.getArgs().get(0));
-                    }
-                    else{
+                    } else {
                         source = new File(parser.getArgs().get(0));
                     }
 
-                    if(temp.lastIndexOf("\\") == -1){
+                    if (temp.lastIndexOf("\\") == -1) {
                         toAdd = "\\" + temp;
-                    }
-                    else{
+                    } else {
                         toAdd = temp.substring(temp.lastIndexOf("\\"), temp.length());
                     }
 
-                    if(!new File(parser.getArgs().get(1)).isAbsolute()){
+                    if (!new File(parser.getArgs().get(1)).isAbsolute()) {
                         destination = new File(currentDir + "\\" +
                                 parser.getArgs().get(1)
                                 + toAdd);
-                    }
-                    else{
+                    } else {
                         destination = new File(parser.getArgs().get(1)
                                 + toAdd);
                     }
                     copyDirectory(source, destination);
-                }
-                else
+                } else
                     cp();
-                break;
-            case "pwd":
-                pwd();
-                break;
-            case "cd":
-                cd();
-                break;
-            case "rmdir":
+            }
+            case "pwd" -> pwd();
+            case "cd" -> cd();
+            case "rmdir" -> {
                 if (Objects.equals(parser.getArgs().get(0), "*"))
                     removeDirectories(currentDir.toString(), currentDir.toString());
                 else
                     removeDirectory();
-                break;
-            case "echo":
-                echo();
-                break;
-            case "cat":
-                cat();
-                break;
-            case "rm":
-                rm();
-                break;
-            case "history":
-                history();
-                break;
-            case "exit":
-                System.exit(0);
-                break;
+            }
+            case "echo" -> echo();
+            case "cat" -> cat();
+            case "rm" -> rm();
+            case "history" -> history();
+            case "exit" -> System.exit(0);
         }
     }
     public void cd() {

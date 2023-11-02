@@ -6,13 +6,13 @@ public class Parser {
     private ArrayList<String> args;
 
     {
-        commandOptions = new ArrayList<String>();
-        args = new ArrayList<String>();
+        commandOptions = new ArrayList<>();
+        args = new ArrayList<>();
     }
 
-    private static enum commands {
+    private enum commands {
         echo, pwd, cd, ls, mkdir, rmdir, touch, cp, rm, cat, wc, history, exit
-    };
+    }
 
     public boolean parse(String input) { // ls -l
         String[] instruction = input.split(" ");
@@ -72,30 +72,22 @@ public class Parser {
     }
 
     public boolean checkArgs() {
-        switch (commandName) {
-            case "pwd","ls","history":
-                return args.isEmpty();
-            case "echo","rmdir","touch","rm":
-                return args.size() == 1;
-            case "cd":
-                return args.isEmpty() || args.size() == 1;
-            case "mkdir":
-                return !args.isEmpty();
-            case "cp":
-                return args.size() == 2;
-            case "cat":
-                return args.size() == 1 || args.size() == 2;
-        }
-        return false;
+        return switch (commandName) {
+            case "pwd", "ls", "history" -> args.isEmpty();
+            case "echo", "rmdir", "touch", "rm" -> args.size() == 1;
+            case "cd" -> args.isEmpty() || args.size() == 1;
+            case "mkdir" -> !args.isEmpty();
+            case "cp" -> args.size() == 2;
+            case "cat" -> args.size() == 1 || args.size() == 2;
+            default -> false;
+        };
     }
 
     public boolean checkOptions() {
-        switch (commandName) {
-            case "ls","cp":
-                return commandOptions.get(0).equals("-r") && commandOptions.size() == 1;
-            default:
-               return commandOptions.isEmpty();
-        }
+        return switch (commandName) {
+            case "ls", "cp" -> commandOptions.get(0).equals("-r") && commandOptions.size() == 1;
+            default -> commandOptions.isEmpty();
+        };
     }
     public String getCommandName() {
         return commandName;
