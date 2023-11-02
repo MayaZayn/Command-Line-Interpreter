@@ -349,16 +349,16 @@ public class Terminal {
         try {
             if(!file.createNewFile()){
                 output = setBoldText + YELLOW +"touch" + setPlainText +
-                        ": can't create file.\n" + parser.getArgs().get(0) + ": "
+                        ": can't create file." + parser.getArgs().get(0) + ": "
                         + setBoldText + RED +
-                        "File already exist at this location" + setPlainText + RESET;
+                        "File already exist at this location" + setPlainText + RESET + '\n';
             }
         }
         catch (IOException e) {
             output = setBoldText + YELLOW +"touch" + setPlainText +
                     ": can't create file.\n" + parser.getArgs().get(0) + ": "
                     + setBoldText + RED +
-                    "Invalid Input" + setPlainText + RESET;
+                    "Invalid Input" + setPlainText + RESET + '\n';
         }
     }
     public void mkdir(){
@@ -368,7 +368,7 @@ public class Terminal {
 
             if(!file.mkdirs()){
                 output = setBoldText + YELLOW + "mkdir" + setPlainText +
-                        ": can't create directory" + arg + ": "
+                        ": can't create directory '" + arg + "': "
                         + setBoldText + RED +
                         "File Exists.\n" + setPlainText;
             }
