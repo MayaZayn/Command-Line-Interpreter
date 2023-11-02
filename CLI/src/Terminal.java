@@ -12,52 +12,16 @@ public class Terminal {
     final static String RED = "\u001B[31m";
     final static String YELLOW = "\u001B[33m";
     final static String RESET = "\u001B[0m";
-
     private static Parser parser = new Parser();
     public void chooseCommandAction() throws IOException {
         switch (parser.getCommandName()) {
             case "mkdir" -> mkdir();
             case "ls" -> ls();
             case "touch" -> touch();
-            case "cp" -> {
-                if (!parser.getCommandOptions().isEmpty() &&
-                        Objects.equals(parser.getCommandOptions().get(0), "-r")) {
-                    File source, destination;
-                    String toAdd;
-                    String temp = parser.getArgs().get(0).toString();
-
-                    if (!new File(parser.getArgs().get(0)).isAbsolute()) {
-                        source = new File(currentDir + "\\" + parser.getArgs().get(0));
-                    } else {
-                        source = new File(parser.getArgs().get(0));
-                    }
-
-                    if (temp.lastIndexOf("\\") == -1) {
-                        toAdd = "\\" + temp;
-                    } else {
-                        toAdd = temp.substring(temp.lastIndexOf("\\"), temp.length());
-                    }
-
-                    if (!new File(parser.getArgs().get(1)).isAbsolute()) {
-                        destination = new File(currentDir + "\\" +
-                                parser.getArgs().get(1)
-                                + toAdd);
-                    } else {
-                        destination = new File(parser.getArgs().get(1)
-                                + toAdd);
-                    }
-                    copyDirectory(source, destination);
-                } else
-                    cp();
-            }
+            case "cp" -> cp();
             case "pwd" -> pwd();
             case "cd" -> cd();
-            case "rmdir" -> {
-                if (Objects.equals(parser.getArgs().get(0), "*"))
-                    removeDirectories(currentDir.toString(), currentDir.toString());
-                else
-                    removeDirectory();
-            }
+            case "rmdir" -> rmdir();
             case "echo" -> echo();
             case "cat" -> cat();
             case "rm" -> rm();
@@ -65,63 +29,6 @@ public class Terminal {
             case "exit" -> System.exit(0);
         }
     }
-    public void cd() {
-        if (parser.getArgs().isEmpty()){ // cd
-            currentDir = currentDir.resolve(currentDir.getRoot());
-        }
-        else {
-            String path = "";
-            for (String arg : parser.getArgs()) {
-                path += arg + " ";
-            }
-            path = path.substring(0, path.length() - 1);
-
-            Path newPath;
-
-            if (path.equals("..")) {
-                newPath = Paths.get(currentDir.toString()).getParent();
-                currentDir = currentDir.resolve(newPath);
-            } else {
-                try {
-                    newPath = Paths.get(path);
-                    if (!newPath.isAbsolute()) {
-                        path = currentDir + "\\" + path;
-                        newPath = Paths.get(path);
-                    }
-                    if (Files.exists(newPath)) {
-                        currentDir = currentDir.resolve(newPath);
-                    } else {
-                        output = setBoldText + RED + "Bad arguments, Invalid path given."
-                                + setPlainText + RESET;
-                    }
-                } catch (InvalidPathException ex) {
-                    output = setBoldText + RED + "Bad arguments, Invalid path given."
-                            + setPlainText + RESET;
-                }
-            }
-        }
-    }
-    public void echo() {
-        output = "";
-        for (String arg : parser.getArgs()) {
-            if(arg.equals(">") || arg.equals(">>")){
-                break;
-            }
-            output += setBoldText + CYAN + arg + " "
-            + setPlainText + RESET;
-        }
-//        if(!output.isEmpty()){
-//            output = output.substring(0, output.length() - 1);
-//        }
-    }
-    public void pwd() {
-        output = setBoldText + "\u001B[34m" + currentDir.toString()
-                + setPlainText + RESET;
-    }
-    public void display() {
-        System.out.println(output);
-    }
-
 
     /*
     Case 1 source absolute , destination not absolute  RIGHT
@@ -146,6 +53,98 @@ public class Terminal {
     new dest: bb\aa;
      */
 
+    public void cd() {
+        if (parser.getArgs().isEmpty()){ // cd
+            currentDir = currentDir.resolve(currentDir.getRoot());
+        }
+        else {
+            String path = "";
+            for (String arg : parser.getArgs()) {
+                path += arg + " ";
+            }
+            path = path.substring(0, path.length() - 1);
+
+            Path newPath;
+
+            if (path.equals("..")) {
+
+                try{
+                    newPath = Paths.get(currentDir.toString()).getParent();
+                    currentDir = currentDir.resolve(newPath);
+                }
+                catch (NullPointerException err){
+                    output = setBoldText + RED + "Can't go back anymore.\n"
+                            + setPlainText + RESET;
+                }
+            } else {
+                try {
+                    newPath = Paths.get(path);
+                    if (!newPath.isAbsolute()) {
+                        path = currentDir + "\\" + path;
+                        newPath = Paths.get(path);
+                    }
+                    if (Files.exists(newPath)) {
+                        currentDir = currentDir.resolve(newPath);
+                    } else {
+                        output = setBoldText + RED + "Bad arguments, Invalid path given."
+                                + setPlainText + RESET + '\n';
+                    }
+                } catch (InvalidPathException ex) {
+                    output = setBoldText + RED + "Bad arguments, Invalid path given."
+                            + setPlainText + RESET + '\n';
+                }
+            }
+        }
+    }
+    public void echo() {
+        output = "";
+        for (String arg : parser.getArgs()) {
+            if(arg.equals(">") || arg.equals(">>")){
+                break;
+            }
+            output += setBoldText + CYAN + arg + " "
+                    + setPlainText + RESET + '\n';
+        }
+//        if(!output.isEmpty()){
+//            output = output.substring(0, output.length() - 1);
+//        }
+    }
+    public void pwd() {
+        output = setBoldText + "\u001B[34m" + currentDir.toString()
+                + setPlainText + RESET + '\n';
+    }
+    public void cp() throws IOException {
+        if (!parser.getCommandOptions().isEmpty() &&
+                Objects.equals(parser.getCommandOptions().get(0), "-r")) {
+            File source, destination;
+            String toAdd;
+            String temp = parser.getArgs().get(0).toString();
+
+            if (!new File(parser.getArgs().get(0)).isAbsolute()) {
+                source = new File(currentDir + "\\" + parser.getArgs().get(0));
+            } else {
+                source = new File(parser.getArgs().get(0));
+            }
+
+            if (temp.lastIndexOf("\\") == -1) {
+                toAdd = "\\" + temp;
+            } else {
+                toAdd = temp.substring(temp.lastIndexOf("\\"), temp.length());
+            }
+
+            if (!new File(parser.getArgs().get(1)).isAbsolute()) {
+                destination = new File(currentDir + "\\" +
+                        parser.getArgs().get(1)
+                        + toAdd);
+            } else {
+                destination = new File(parser.getArgs().get(1)
+                        + toAdd);
+            }
+            copyDirectory(source, destination);
+        } else  {
+            copyFile();
+        }
+    }
     public void copyDirectory(File source, File destination) throws IOException {
         if (source.isDirectory()) {
             if (!destination.exists()) {
@@ -160,145 +159,13 @@ public class Terminal {
             try {
                 Files.copy(source.toPath(), destination.toPath());
             } catch (FileAlreadyExistsException e) {}
-        } else { // ALERT needed or not ???!!!!!!
+        } else {
             try {
                 Files.copy(source.toPath(), destination.toPath());
             } catch (FileAlreadyExistsException e) {}
         }
     }
-    // rmdir *
-    /*
-    solve problem that main folder where deleted.
-     */
-    public void removeDirectories(String s, String root) throws IOException {
-        File f = new File(s);
-        if (f.isDirectory()) {
-            String[] files = f.list();
-            for (String file : files)
-                removeDirectories(String.valueOf(new File(f, file)), root);
-            try {
-                if(!f.toString().equals(root)) {
-                    Files.delete(f.toPath());
-                }
-            } catch (NoSuchFileException noSuchFileException) {
-                output = setBoldText + YELLOW + "rmdir" + setPlainText +
-                        ": cannot remove '" + s + "': " +
-                        setBoldText + RED +"No such directory" + setPlainText;
-            } catch (DirectoryNotEmptyException directoryNotEmptyException) {
-                output = setBoldText + YELLOW + "rmdir" + setPlainText +
-                        ": cannot remove '" + s + "': " +
-                        setBoldText + RED +"Directory not empty" + setPlainText;
-            }
-        }
-        // Handle the case if the folder doesn't exist   IT MUST BE EXISTED>
-    }
-
-    // rmdir pathname (relative or absolute)
-    public void removeDirectory() throws IOException {
-        String s = parser.getArgs().get(0);
-        File file = new File(s);
-        if (!file.isAbsolute())
-            file = new File(currentDir.toString(), s);
-        try {
-            Files.delete(file.toPath());
-        } catch (NoSuchFileException noSuchFileException) {
-            output = setBoldText + YELLOW + "rmdir" + setPlainText +
-                    ": cannot remove '" + s + "': " +
-                    setBoldText + RED +"No such directory" + setPlainText;
-        } catch (DirectoryNotEmptyException directoryNotEmptyException) {
-            output = setBoldText + YELLOW + "rmdir" + setPlainText +
-                    ": cannot remove '" + s + "': " +
-                    setBoldText + RED +"Directory not empty" + setPlainText;
-        }
-    }
-    public void rm() throws IOException {
-        File file = new File(currentDir.toString(), parser.getArgs().get(0));
-        try {
-            Files.delete(file.toPath());
-        } catch (NoSuchFileException noSuchFileException) {
-            output = setBoldText + "rm" + setPlainText +
-                    ": cannot remove '" + parser.getArgs().get(0) + "': " +
-                    setBoldText +  "No such file or directory" + setPlainText;
-        }
-    }
-    public void history(){
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < inputHistory.size(); i++) {
-            builder.append(setBoldText + (i + 1) + setPlainText).append("  ")
-                    .append(setBoldText + YELLOW + inputHistory.get(i))
-                    .append(setPlainText + RESET + "\n");
-        }
-        output = builder.toString();
-        if(output.isEmpty()){
-            output = setBoldText + YELLOW + "History: " + RESET +
-                     setBoldText + "Empty no commands' found" + setPlainText;
-        }
-    }
-    public void cat() {
-        //handle paths with empty space
-        //Reset arguments list in parser
-        StringBuilder result = new StringBuilder();
-        for (int i = 0; i < parser.getArgs().size(); i++) {
-            String filename= parser.getArgs().get(i);
-
-            if(!new File(filename).isAbsolute()){
-                filename = currentDir + "\\" + filename;
-            }
-            File file = new File(filename);
-            try {
-                Scanner fileSc = new Scanner(file);
-                while(fileSc.hasNextLine()){
-                    result.append(fileSc.nextLine()).append("\n");
-                }
-            } catch (FileNotFoundException fileNotFoundException){
-                output = "File not Found";
-                return;
-            }
-        }
-        output = result.toString();
-    }
-    public void ls() {
-        File file = new File(currentDir.toString());
-        String[] paths = file.list();
-        if (!parser.getCommandOptions().isEmpty() && parser.getCommandOptions().get(0).equals("-r"))  {
-            Arrays.sort(paths, Collections.reverseOrder());
-        }
-        for (String a : paths) {
-            output += setBoldText + CYAN + a + " " + setPlainText + RESET;
-        }
-    }
-    public void touch() {
-        File file = new File(currentDir + "\\" + parser.getArgs().get(0));
-
-        try {
-            if(!file.createNewFile()){
-                output = setBoldText + YELLOW +"touch" + setPlainText +
-                        ": can't create file.\n" + parser.getArgs().get(0) + ": "
-                        + setBoldText + RED +
-                        "File already exist at this location" + setPlainText + RESET;
-            }
-        }
-        catch (IOException e) {
-            output = setBoldText + YELLOW +"touch" + setPlainText +
-                    ": can't create file.\n" + parser.getArgs().get(0) + ": "
-                    + setBoldText + RED +
-                    "Invalid Input" + setPlainText + RESET;
-        }
-    }
-    public void mkdir(){
-        for(String arg : parser.getArgs()){
-
-            File file = new File(currentDir + "\\" + arg);
-
-            if(!file.mkdirs()){
-                output = setBoldText + YELLOW + "mkdir" + setPlainText +
-                        ": can't create directory\n" + arg + ": "
-                        + setBoldText + RED +
-                        "File Exists" + setPlainText;
-            }
-        }
-    }
-    public void cp() throws IOException {
+    public void copyFile() throws IOException {
         File file1;
         File file2;
 
@@ -331,8 +198,7 @@ public class Terminal {
             output = setBoldText + "mkdir" + setPlainText +
                     ": can't copy file "
                     + setBoldText +
-                    ": No such files exists" + setPlainText;
-            display();
+                    ": No such files exists" + setPlainText + '\n';
         }
         finally {
             if(in != null) {
@@ -343,6 +209,159 @@ public class Terminal {
                 out.close();
             }
         }
+    }
+    public void rmdir() throws IOException {
+        if (Objects.equals(parser.getArgs().get(0), "*"))
+            removeDirectories(currentDir.toString(), currentDir.toString());
+        else
+            removeDirectory();
+    }
+    // rmdir *
+    public void removeDirectories(String s, String root) throws IOException {
+        File f = new File(s);
+        if (f.isDirectory()) {
+            String[] files = f.list();
+            for (String file : files)
+                removeDirectories(String.valueOf(new File(f, file)), root);
+            try {
+                if(!f.toString().equals(root)) {
+                    Files.delete(f.toPath());
+                }
+            } catch (NoSuchFileException noSuchFileException) {
+                output = setBoldText + YELLOW + "rmdir" + setPlainText +
+                        ": cannot remove '" + s + "': " +
+                        setBoldText + RED +"No such directory" + setPlainText + '\n';
+            } catch (DirectoryNotEmptyException directoryNotEmptyException) {
+                output = setBoldText + YELLOW + "rmdir" + setPlainText +
+                        ": cannot remove '" + s + "': " +
+                        setBoldText + RED +"Directory not empty" + setPlainText + '\n';
+            }
+        }
+    }
+    // rmdir pathname (relative or absolute)
+    public void removeDirectory() throws IOException {
+        String s = parser.getArgs().get(0);
+        File file = new File(s);
+        if (!file.isAbsolute())
+            file = new File(currentDir.toString(), s);
+        try {
+            Files.delete(file.toPath());
+        } catch (NoSuchFileException noSuchFileException) {
+            output = setBoldText + YELLOW + "rmdir" + setPlainText +
+                    ": cannot remove '" + s + "': " +
+                    setBoldText + RED +"No such directory" + setPlainText + '\n';
+        } catch (DirectoryNotEmptyException directoryNotEmptyException) {
+            output = setBoldText + YELLOW + "rmdir" + setPlainText +
+                    ": cannot remove '" + s + "': " +
+                    setBoldText + RED +"Directory not empty." + setPlainText + '\n';
+        }
+    }
+    public void rm() throws IOException {
+        File file = new File(currentDir.toString(), parser.getArgs().get(0));
+        if (file.isDirectory()) {
+            output = setBoldText + YELLOW + "rm" + setPlainText +
+                    ": cannot remove.\n" + setBoldText +
+                    parser.getArgs().get(0) + ": " +
+                    setBoldText +  RED + "Is a directory." + setPlainText +
+                    RESET + '\n';
+        } else {
+            try {
+                Files.delete(file.toPath());
+            } catch (NoSuchFileException noSuchFileException) {
+                output = setBoldText + YELLOW + "rm" + setPlainText +
+                        ": cannot remove.\n" + setBoldText +
+                        parser.getArgs().get(0) + ": " +
+                        setBoldText +  RED + "No such file or directory." + setPlainText +
+                        RESET + '\n';
+            }
+        }
+    }
+    public void history(){
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < inputHistory.size(); i++) {
+            builder.append(setBoldText + (i + 1) + setPlainText).append("  ")
+                    .append(setBoldText + YELLOW + inputHistory.get(i))
+                    .append(setPlainText + RESET + "\n");
+        }
+        output = builder.toString();
+        if(output.isEmpty()){
+            output = setBoldText + YELLOW + "History: " + RESET +
+                     setBoldText + "Empty no commands' found" + setPlainText;
+        }
+    }
+    public void cat() {
+        //handle paths with empty space
+        //Reset arguments list in parser
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < parser.getArgs().size(); i++) {
+            String filename= parser.getArgs().get(i);
+
+            if(!new File(filename).isAbsolute()){
+                filename = currentDir + "\\" + filename;
+            }
+            File file = new File(filename);
+            try {
+                Scanner fileSc = new Scanner(file);
+                while(fileSc.hasNextLine()){
+                    result.append(fileSc.nextLine()).append("\n");
+                }
+            } catch (FileNotFoundException fileNotFoundException){
+                output = setBoldText + RED + "File not Found\n" + setPlainText + RESET;
+                return;
+            }
+        }
+        output = result.toString();
+    }
+    public void ls() {
+        File file = new File(currentDir.toString());
+        if(!parser.getArgs().isEmpty() && new File(parser.getArgs().get(0)).isAbsolute()){
+            file = new File(parser.getArgs().get(0));
+        }
+        String[] paths = file.list();
+        if(paths.length == 0){
+            output = setBoldText + RED + "Empty Directory.\n" + setPlainText + RESET;
+            return;
+        }
+        if (!parser.getCommandOptions().isEmpty() && parser.getCommandOptions().get(0).equals("-r"))  {
+            Arrays.sort(paths, Collections.reverseOrder());
+        }
+        for (String a : paths) {
+            output += setBoldText + CYAN + a + "  " + setPlainText + RESET + '\n';
+        }
+    }
+    public void touch() {
+        File file = new File(currentDir + "\\" + parser.getArgs().get(0));
+
+        try {
+            if(!file.createNewFile()){
+                output = setBoldText + YELLOW +"touch" + setPlainText +
+                        ": can't create file.\n" + parser.getArgs().get(0) + ": "
+                        + setBoldText + RED +
+                        "File already exist at this location" + setPlainText + RESET;
+            }
+        }
+        catch (IOException e) {
+            output = setBoldText + YELLOW +"touch" + setPlainText +
+                    ": can't create file.\n" + parser.getArgs().get(0) + ": "
+                    + setBoldText + RED +
+                    "Invalid Input" + setPlainText + RESET;
+        }
+    }
+    public void mkdir(){
+        for(String arg : parser.getArgs()){
+
+            File file = new File(currentDir + "\\" + arg);
+
+            if(!file.mkdirs()){
+                output = setBoldText + YELLOW + "mkdir" + setPlainText +
+                        ": can't create directory\n" + arg + ": "
+                        + setBoldText + RED +
+                        "File Exists.\n" + setPlainText;
+            }
+        }
+    }
+    public void display() {
+        System.out.print(output);
     }
 
     public static void main(String[] args) throws IOException {
@@ -357,8 +376,11 @@ public class Terminal {
             input = input.strip();
             if (!input.isEmpty()) {
                 if (!parser.parse(input)){
-                    t.output = parser.getCommandName() + ": Invalid options or number of arguments";
-                }else{
+                    t.output = setBoldText + RED +
+                            parser.getCommandName() + setBoldText + RED
+                            + ": Invalid command, options, or number of arguments\n"
+                            + RESET;
+                } else {
                     t.chooseCommandAction();
                 }
             }
@@ -366,5 +388,4 @@ public class Terminal {
             inputHistory.add(input);
         }
     }
-
 }
