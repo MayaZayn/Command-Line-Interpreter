@@ -109,8 +109,9 @@ public class Terminal {
                     break;
                 }
                 output += setBoldText + CYAN + arg + " "
-                        + setPlainText + RESET + '\n';
+                        + setPlainText + RESET + ' ';
             }
+            output += "\n";
         } else {
             output = "\n";
         }
