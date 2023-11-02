@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Terminal {
     private String output = "";
-    private Path currentDir = Paths.get(System.getProperty("user.home") + "/Desktop");  //why is it desktop not cur
+    private Path currentDir = Paths.get(System.getProperty("user.home") + "/Desktop");
     static List<String> inputHistory = new ArrayList<>();
     final static String setPlainText = "\033[0;0m";
     final static String setBoldText = "\033[0;1m";
@@ -357,14 +357,14 @@ public class Terminal {
             String input = s.nextLine();
             input = input.strip();
             if (!input.isEmpty()) {
-                inputHistory.add(input);
-                if (parser.parse(input)) {
-                    t.chooseCommandAction();
-                    t.display();
+                if (!parser.parse(input)) {
+                    t.output = parser.getCommandName() + ": Invalid options or number of arguments";
                 } else {
-                    System.out.println("Command '" + parser.getCommandName() + "' not found!");
+                    t.chooseCommandAction();
                 }
             }
+            t.display();
+            inputHistory.add(input);
         }
     }
 }

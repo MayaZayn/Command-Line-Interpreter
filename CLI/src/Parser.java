@@ -70,7 +70,7 @@ public class Parser {
     }
     public boolean checkArgs() {
         return switch (commandName) {
-            case "pwd", "ls", "history" -> args.isEmpty();
+            case "pwd", "ls", "history","exit" -> args.isEmpty();
             case "echo", "rmdir", "touch", "rm" -> args.size() == 1;
             case "cd" -> args.isEmpty() || args.size() == 1;
             case "mkdir" -> !args.isEmpty();
@@ -81,7 +81,7 @@ public class Parser {
     }
     public boolean checkOptions() {
         return switch (commandName) {
-            case "ls", "cp" -> commandOptions.get(0).equals("-r") && commandOptions.size() == 1;
+            case "ls", "cp" -> (commandOptions.isEmpty() || (commandOptions.get(0).equals("-r") && commandOptions.size() == 1));
             default -> commandOptions.isEmpty();
         };
     }
