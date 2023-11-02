@@ -253,22 +253,26 @@ public class Terminal {
         } catch (DirectoryNotEmptyException directoryNotEmptyException) {
             output = setBoldText + YELLOW + "rmdir" + setPlainText +
                     ": cannot remove '" + s + "': " +
-                    setBoldText + RED +"Directory not empty" + setPlainText + '\n';
+                    setBoldText + RED +"Directory not empty." + setPlainText + '\n';
         }
     }
     public void rm() throws IOException {
         File file = new File(currentDir.toString(), parser.getArgs().get(0));
         if (file.isDirectory()) {
-            output = setBoldText + "rm" + setPlainText +
-                    ": cannot remove '" + parser.getArgs().get(0) + "': " +
-                    setBoldText +  "Is a directory" + setPlainText + '\n';
+            output = setBoldText + YELLOW + "rm" + setPlainText +
+                    ": cannot remove.\n" + setBoldText +
+                    parser.getArgs().get(0) + ": " +
+                    setBoldText +  RED + "Is a directory." + setPlainText +
+                    RESET + '\n';
         } else {
             try {
                 Files.delete(file.toPath());
             } catch (NoSuchFileException noSuchFileException) {
-                output = setBoldText + "rm" + setPlainText +
-                        ": cannot remove '" + parser.getArgs().get(0) + "': " +
-                        setBoldText +  "No such file or directory" + setPlainText + '\n';
+                output = setBoldText + YELLOW + "rm" + setPlainText +
+                        ": cannot remove.\n" + setBoldText +
+                        parser.getArgs().get(0) + ": " +
+                        setBoldText +  RED + "No such file or directory." + setPlainText +
+                        RESET + '\n';
             }
         }
     }
@@ -302,7 +306,7 @@ public class Terminal {
                     result.append(fileSc.nextLine()).append("\n");
                 }
             } catch (FileNotFoundException fileNotFoundException){
-                output = "File not Found";
+                output = setBoldText + RED + "File not Found\n" + setPlainText + RESET;
                 return;
             }
         }
@@ -352,7 +356,7 @@ public class Terminal {
                 output = setBoldText + YELLOW + "mkdir" + setPlainText +
                         ": can't create directory\n" + arg + ": "
                         + setBoldText + RED +
-                        "File Exists" + setPlainText;
+                        "File Exists.\n" + setPlainText;
             }
         }
     }
