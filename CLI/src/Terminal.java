@@ -161,10 +161,11 @@ public class Terminal {
                 Files.copy(source.toPath(), destination.toPath());
             } catch (FileAlreadyExistsException e) {}
             catch (NoSuchFileException noSuchFileException) {
-                output = setBoldText + "mkdir" + setPlainText +
-                        ": can't copy file "
-                        + setBoldText +
-                        ": No such files exists" + setPlainText + '\n';
+                output = setBoldText + YELLOW + "cp" + setPlainText +
+                        ": cannot copy file:" + setBoldText +
+                        parser.getArgs().get(0) + ": " +
+                        setBoldText +  RED + "No such file exists." + setPlainText +
+                        RESET + '\n';
             }
         } else {
             try {
@@ -273,7 +274,7 @@ public class Terminal {
         File file = new File(currentDir.toString(), parser.getArgs().get(0));
         if (file.isDirectory()) {
             output = setBoldText + YELLOW + "rm" + setPlainText +
-                    ": cannot remove.\n" + setBoldText +
+                    ": cannot remove:" + setBoldText +
                     parser.getArgs().get(0) + ": " +
                     setBoldText +  RED + "Is a directory." + setPlainText +
                     RESET + '\n';
@@ -284,7 +285,7 @@ public class Terminal {
                 output = setBoldText + YELLOW + "rm" + setPlainText +
                         ": cannot remove.\n" + setBoldText +
                         parser.getArgs().get(0) + ": " +
-                        setBoldText +  RED + "No such file or directory." + setPlainText +
+                        setBoldText +  RED + "No such file." + setPlainText +
                         RESET + '\n';
             }
         }
@@ -367,7 +368,7 @@ public class Terminal {
 
             if(!file.mkdirs()){
                 output = setBoldText + YELLOW + "mkdir" + setPlainText +
-                        ": can't create directory\n" + arg + ": "
+                        ": can't create directory" + arg + ": "
                         + setBoldText + RED +
                         "File Exists.\n" + setPlainText;
             }
