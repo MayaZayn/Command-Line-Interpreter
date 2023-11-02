@@ -105,9 +105,6 @@ public class Terminal {
             output += setBoldText + CYAN + arg + " "
                     + setPlainText + RESET + '\n';
         }
-//        if(!output.isEmpty()){
-//            output = output.substring(0, output.length() - 1);
-//        }
     }
     public void pwd() {
         output = setBoldText + "\u001B[34m" + currentDir.toString()
@@ -361,7 +358,7 @@ public class Terminal {
         }
     }
     public void display() {
-        System.out.print(output);
+        System.out.println(output);
     }
 
     public static void main(String[] args) throws IOException {
