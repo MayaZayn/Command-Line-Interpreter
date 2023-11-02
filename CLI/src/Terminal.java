@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Terminal {
     private String output = "";
-    private Path currentDir = Paths.get(System.getProperty("user.home") + "/Desktop");
+    private Path currentDir = Paths.get("").toAbsolutePath();
     static List<String> inputHistory = new ArrayList<>();
     final static String setPlainText = "\033[0;0m";
     final static String setBoldText = "\033[0;1m";
