@@ -85,7 +85,7 @@ public class Parser {
 
     public boolean checkOptions() {
         return switch (commandName) {
-            case "ls", "cp" -> commandOptions.get(0).equals("-r") && commandOptions.size() == 1;
+            case "ls", "cp" -> (commandOptions.isEmpty() || (commandOptions.get(0).equals("-r") && commandOptions.size() == 1));
             default -> commandOptions.isEmpty();
         };
     }
