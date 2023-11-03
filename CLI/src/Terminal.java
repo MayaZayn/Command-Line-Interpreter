@@ -429,6 +429,7 @@ public class Terminal {
                     while(fileSc.hasNextLine()){
                         result.append(fileSc.nextLine()).append("\n");
                     }
+                    fileSc.close();
                 } catch (FileNotFoundException fileNotFoundException){
                     output = setBoldText + RED + parser.getCommandName() + ": No such file or directory.\n" + setPlainText + RESET;
                     return;
