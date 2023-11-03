@@ -327,15 +327,21 @@ public class Terminal {
                 filename = currentDir + "\\" + filename;
             }
             File file = new File(filename);
-            try {
-                Scanner fileSc = new Scanner(file);
-                while(fileSc.hasNextLine()){
-                    result.append(fileSc.nextLine()).append("\n");
+            if(!file.isDirectory()){
+                try {
+                    Scanner fileSc = new Scanner(file);
+                    while(fileSc.hasNextLine()){
+                        result.append(fileSc.nextLine()).append("\n");
+                    }
+                } catch (FileNotFoundException fileNotFoundException){
+                    output = setBoldText + RED + parser.getCommandName() + ": No such file or directory.\n" + setPlainText + RESET;
+                    return;
                 }
-            } catch (FileNotFoundException fileNotFoundException){
-                output = setBoldText + RED + "File not Found\n" + setPlainText + RESET;
+            }else {
+                output = setBoldText + RED + parser.getCommandName() + ": "+ filename +  ": is a directory.\n" + setPlainText + RESET;
                 return;
             }
+
         }
         output = result.toString();
     }
